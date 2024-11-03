@@ -1,14 +1,41 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
+import image from '../../../assets/logo.png'
+import { AuthContext } from '../../../Provider/AuthProvider';
+import { TiShoppingCart } from "react-icons/ti";
+import useCarts from '../../../Hooks/useCarts';
+import useAdmin from '../../../Hooks/useAdmin';
+
 
 const Navbar = () => {
+  const {user, logOut} = useContext(AuthContext);
+  const [cart] = useCarts();
+  const [isAdmin] = useAdmin();
+
+
+  const handleLogOut = () =>{
+    logOut()
+    .then(() => {})
+    .catch(error => console.log(error));
+  }
     const navOption = <>
-    <li><a>Home</a></li>
-    <li><a>Menu</a></li>
-        <li>
-          <a>My Order</a>
-        </li>
-        <li><a>PayOut</a></li>
-        <li><a>About</a></li>
+    <li><Link to="/">Home</Link></li>
+    <li><Link to="/menu">Our Menu</Link></li>
+    <li><Link to="/order/salad">Order Food</Link></li>
+    <li>
+      <Link to="/dashboard/cart">
+      <button className='flex mx-auto'>
+      <TiShoppingCart className=' mr-2 w-6 h-6' />
+      <div className="badge badge-secondary">+{cart.length}</div>
+      </button>
+      </Link>
+    </li>
+
+    {
+      user ? <><button onClick={handleLogOut} className="btn btn-active btn-ghost">Log Out</button></> : <>
+      <li><Link to="/login">Login</Link></li>
+      </>
+    }
     </>
     return (
         <div>
@@ -35,15 +62,29 @@ const Navbar = () => {
         {navOption}
       </ul>
     </div>
-    <a className="btn btn-ghost text-xl">84 Foodbar</a>
+    <div className='flex'>
+    <img className='h-10 w-10' src={image} alt="" />
+    <a className="btn btn-ghost text-xl">84Foodbar</a>
+    </div>
   </div>
   <div className="navbar-center hidden lg:flex">
     <ul className="menu menu-horizontal px-1">
       {navOption}
     </ul>
   </div>
-  <div className="navbar-end">
-    <a className="btn">Gat Start</a>
+  <div className="navbar-end gap-4">
+    {
+      user && isAdmin && <Link to="/dashboard/adminHome"><span className='text-green-600'>{user?.displayName}</span></Link>
+    }
+    {
+      user && !isAdmin && <Link to="/dashboard/userHome"><span className='text-green-600'>{user?.displayName}</span></Link>
+    }
+    
+    <div className="avatar">
+  <div className="w-12 rounded-full">
+  <img src={user?.photoURL } alt="" />
+  </div>
+</div>
   </div>
 </div>
         </div>

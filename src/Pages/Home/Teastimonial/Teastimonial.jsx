@@ -13,7 +13,7 @@ import '@smastrom/react-rating/style.css'
 const Teastimonial = () => {
     const [reviwes, setReviwes] = useState([]);
     useEffect(()=>{
-        fetch('reviews.json')
+        fetch('https://84-foodbar-server.vercel.app/reviews')
         .then(res => res.json())
         .then(data => setReviwes(data))
     }, [])
